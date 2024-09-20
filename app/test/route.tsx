@@ -1,4 +1,5 @@
 const cp = require('@/app/lib/db');
+import {fetchFilteredInvoices} from '@/app/lib/data';
 
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 import bcrypt from 'bcrypt';
@@ -109,11 +110,15 @@ export async function GET() {
   try {
     // await cp.query`BEGIN`;
 
+
     // await seedUsers();
     // await seedCustomers();
-    await seedInvoices();
+    // await seedInvoices();
     // await seedRevenue();
     // await cp.query`COMMIT`;
+
+    let x = await fetchFilteredInvoices("Lee", 1);
+    console.log("DB result:",x);
 
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error) {
