@@ -1,5 +1,6 @@
 // import { sql } from '@vercel/postgres';
-const cp = require('@/app/lib/db');
+// const cp = require('@/app/lib/db');
+import connPool from '@/app/lib/db';
 
 import {
   CustomerField,
@@ -19,7 +20,7 @@ export async function fetchRevenue() {
     console.log('Fetching revenue data...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const data = await cp.query(`SELECT * FROM revenue`);
+    const data = await connPool.query(`SELECT * FROM revenue`);
 
     // console.log('Data fetch completed after 3 seconds.');
     console.log("Revenue data", data.rows);
@@ -35,7 +36,7 @@ export async function fetchLatestInvoices() {
   try {
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const data = await cp.query(`
+    const data = await connPool.query(`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
@@ -60,9 +61,9 @@ export async function fetchCardData() {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = cp.query(`SELECT COUNT(*) FROM invoices`);
-    const customerCountPromise = cp.query(`SELECT COUNT(*) FROM customers`);
-    const invoiceStatusPromise = cp.query(`SELECT
+    const invoiceCountPromise = connPool.query(`SELECT COUNT(*) FROM invoices`);
+    const customerCountPromise = connPool.query(`SELECT COUNT(*) FROM customers`);
+    const invoiceStatusPromise = connPool.query(`SELECT
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
          FROM invoices`);
@@ -98,7 +99,7 @@ export async function fetchFilteredInvoices(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await cp.query(`
+    const invoices = await connPool.query(`
       SELECT
         invoices.id,
         invoices.amount,
@@ -128,7 +129,7 @@ export async function fetchFilteredInvoices(
 
 export async function fetchInvoicesPages(query: string) {
   try {
-    const count = await cp.query(`SELECT COUNT(*)
+    const count = await connPool.query(`SELECT COUNT(*)
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
     WHERE
@@ -149,7 +150,7 @@ export async function fetchInvoicesPages(query: string) {
 
 export async function fetchInvoiceById(id: string) {
   try {
-    const data = await cp.query(`
+    const data = await connPool.query(`
       SELECT
         invoices.id,
         invoices.customer_id,
@@ -174,7 +175,7 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchCustomers() {
   try {
-    const data = await cp.query(`
+    const data = await connPool.query(`
       SELECT
         id,
         name
@@ -182,7 +183,7 @@ export async function fetchCustomers() {
       ORDER BY name ASC
     `);
 
-    const customers = <CustomerField>data.rows;
+    const customers = <CustomerField[]>data.rows;
     return customers;
   } catch (err) {
     console.error('Database Error:', err);
@@ -192,7 +193,7 @@ export async function fetchCustomers() {
 
 export async function fetchFilteredCustomers(query: string) {
   try {
-    const data = await cp.query(`
+    const data = await connPool.query(`
 		SELECT
 		  customers.id,
 		  customers.name,
