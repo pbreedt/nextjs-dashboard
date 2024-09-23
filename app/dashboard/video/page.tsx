@@ -8,7 +8,7 @@ export default async function Page() {
     <div className="w-screen h-screen flex flex-col gap-4 text-lg font-semibold justify-center items-center ">
       <h1>Video Player App</h1>
       <Suspense fallback={<CardSkeleton />} >
-        <Video />
+        <Video videosrc="/videos/720p_2mb.mp4" />
       </Suspense>
     </div>
   );
