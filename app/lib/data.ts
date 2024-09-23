@@ -28,7 +28,8 @@ export async function fetchRevenue() {
     return <Revenue[]>data.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    return [];
+    // throw new Error('Failed to fetch revenue data.');
   }
 }
 
@@ -50,7 +51,8 @@ export async function fetchLatestInvoices() {
     return latestInvoices;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest invoices.');
+    return [];
+    // throw new Error('Failed to fetch the latest invoices.');
   }
 }
 
@@ -87,7 +89,8 @@ export async function fetchCardData() {
     };
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch card data.');
+    return {};
+    // throw new Error('Failed to fetch card data.');
   }
 }
 

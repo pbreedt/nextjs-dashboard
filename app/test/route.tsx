@@ -112,14 +112,14 @@ export async function GET() {
     // await cp.query`BEGIN`;
 
 
-    // await seedUsers();
-    // await seedCustomers();
-    // await seedInvoices();
-    // await seedRevenue();
+    await seedUsers();
+    await seedCustomers();
+    await seedInvoices();
+    await seedRevenue();
     // await cp.query`COMMIT`;
 
-    let x = await fetchFilteredInvoices("Lee", 1);
-    console.log("DB result:",x);
+    // let x = await fetchFilteredInvoices("Lee", 1);
+    // console.log("DB result:",x);
 
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error) {
